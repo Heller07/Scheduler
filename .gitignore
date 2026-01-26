@@ -1,0 +1,19 @@
+# Node
+node_modules/
+npm-debug.log*
+
+# React build
+scheduler-ui/node_modules/
+scheduler-ui/build/
+
+# C++ build artifacts
+*.o
+lab4
+
+# Runtime files
+input.txt
+
+# OS / editor junk
+.DS_Store
+.vscode/
+.idea/
