@@ -1,3 +1,4 @@
+/* ---------- Global ---------- */
 * {
   box-sizing: border-box;
 }
@@ -9,6 +10,7 @@ body {
   color: #e5e7eb;
 }
 
+/* ---------- Layout ---------- */
 .app {
   min-height: 100vh;
   display: flex;
@@ -32,6 +34,7 @@ h1 {
   letter-spacing: 1px;
 }
 
+/* ---------- Controls ---------- */
 .controls {
   display: grid;
   grid-template-columns: 1fr 1.5fr;
@@ -71,6 +74,7 @@ textarea:focus {
   border-color: #38bdf8;
 }
 
+/* ---------- Button ---------- */
 .run-btn {
   margin-top: 10px;
   width: 100%;
@@ -88,6 +92,7 @@ textarea:focus {
   opacity: 0.9;
 }
 
+/* ---------- Errors ---------- */
 .error {
   margin-top: 15px;
   padding: 10px;
@@ -96,39 +101,54 @@ textarea:focus {
   color: #fecaca;
 }
 
+/* ---------- Gantt Chart ---------- */
 .gantt {
   margin-top: 30px;
 }
 
 .gantt h2 {
-  margin-bottom: 15px;
+  margin-bottom: 12px;
 }
 
+/* shared left gutter */
+.process-label {
+  width: 40px;
+  text-align: right;
+  margin-right: 10px;
+  font-weight: bold;
+}
+
+/* rows */
 .gantt-row {
   display: flex;
   align-items: center;
-  margin-bottom: 8px;
+  margin-bottom: 2px;
 }
 
-.process-label {
-  width: 40px;
-  font-weight: bold;
-  text-align: right;
-  margin-right: 10px;
-}
-
+/* grid cells */
 .cells {
   display: flex;
   gap: 2px;
 }
 
-.cell {
+/* time + process cells */
+.cell,
+.time-cell {
   width: 18px;
   height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   border-radius: 4px;
-  background: #1e293b;
 }
 
+/* time numbers */
+.time-cell {
+  font-size: 10px;
+  color: #94a3b8;
+}
+
+/* process states */
 .cell.run {
   background: #22c55e;
 }
@@ -139,4 +159,56 @@ textarea:focus {
 
 .cell.idle {
   background: #334155;
+}
+
+/* ---------- Legend ---------- */
+.legend-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 4px;
+}
+
+.legend {
+  display: flex;
+  gap: 20px;
+  font-size: 0.85rem;
+  color: #cbd5f5;
+  opacity: 0.85;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.legend-box {
+  width: 14px;
+  height: 14px;
+  border-radius: 3px;
+}
+
+/* ---------- Time Label ---------- */
+.time-label-row {
+  display: flex;
+  margin-bottom: 2px;
+}
+
+.time-label {
+  font-size: 0.75rem;
+  color: #94a3b8;
+  font-weight: normal;
+}
+
+
+/* ---------- Divider ---------- */
+.gantt-divider {
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    transparent,
+    #1e293b,
+    transparent
+  );
+  margin: 6px 0 8px;
 }
