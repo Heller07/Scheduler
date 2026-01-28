@@ -1,23 +1,142 @@
-.row {
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: #0f172a;
+  font-family: "Inter", monospace;
+  color: #e5e7eb;
+}
+
+.app {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 40px 20px;
+}
+
+.card {
+  width: 100%;
+  max-width: 900px;
+  background: #020617;
+  border-radius: 14px;
+  padding: 30px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+}
+
+h1 {
+  margin-top: 0;
+  text-align: center;
+  letter-spacing: 1px;
+}
+
+.controls {
+  display: grid;
+  grid-template-columns: 1fr 1.5fr;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.control {
+  display: flex;
+  flex-direction: column;
+}
+
+label {
+  margin-bottom: 6px;
+  font-size: 0.9rem;
+  color: #94a3b8;
+}
+
+select,
+textarea {
+  background: #020617;
+  color: #e5e7eb;
+  border: 1px solid #334155;
+  border-radius: 8px;
+  padding: 10px;
+  font-family: monospace;
+}
+
+textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+select:focus,
+textarea:focus {
+  outline: none;
+  border-color: #38bdf8;
+}
+
+.run-btn {
+  margin-top: 10px;
+  width: 100%;
+  padding: 12px;
+  background: linear-gradient(135deg, #22d3ee, #38bdf8);
+  border: none;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  color: #020617;
+}
+
+.run-btn:hover {
+  opacity: 0.9;
+}
+
+.error {
+  margin-top: 15px;
+  padding: 10px;
+  background: #7f1d1d;
+  border-radius: 8px;
+  color: #fecaca;
+}
+
+.gantt {
+  margin-top: 30px;
+}
+
+.gantt h2 {
+  margin-bottom: 15px;
+}
+
+.gantt-row {
   display: flex;
   align-items: center;
-  margin-bottom: 5px;
+  margin-bottom: 8px;
+}
+
+.process-label {
+  width: 40px;
+  font-weight: bold;
+  text-align: right;
+  margin-right: 10px;
+}
+
+.cells {
+  display: flex;
+  gap: 2px;
 }
 
 .cell {
   width: 18px;
   height: 18px;
-  border: 1px solid #ccc;
+  border-radius: 4px;
+  background: #1e293b;
 }
 
-.run {
-  background-color: #4caf50;
+.cell.run {
+  background: #22c55e;
 }
 
-.wait {
-  background-color: #ff9800;
+.cell.wait {
+  background: #eab308;
 }
 
-.idle {
-  background-color: #eee;
+.cell.idle {
+  background: #334155;
 }

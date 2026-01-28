@@ -76,64 +76,70 @@ ${processes.join("\n")}
   };
 
   return (
-    <div style={{ padding: "20px", fontFamily: "monospace" }}>
-      <h2>CPU Scheduling Simulator</h2>
+  <div className="app">
+    <div className="card">
+      <h1>CPU Scheduling Simulator</h1>
 
-      {/* Algorithm Dropdown */}
-      <label>Algorithm: </label>
-      <select value={algorithm} onChange={e => setAlgorithm(e.target.value)}>
-        <option value="1">FCFS</option>
-        <option value="2">Round Robin</option>
-        <option value="3">SPN</option>
-        <option value="4">SRT</option>
-        <option value="5">HRRN</option>
-        <option value="6">FB-1</option>
-        <option value="7">FB-2i</option>
-        <option value="8">AGING</option>
-      </select>
+      <div className="controls">
+        <div className="control">
+          <label>Algorithm</label>
+          <select value={algorithm} onChange={e => setAlgorithm(e.target.value)}>
+            <option value="1">FCFS</option>
+            <option value="2">Round Robin</option>
+            <option value="3">SPN</option>
+            <option value="4">SRT</option>
+            <option value="5">HRRN</option>
+            <option value="6">FB-1</option>
+            <option value="7">FB-2i</option>
+            <option value="8">AGING</option>
+          </select>
+        </div>
 
-      <br /><br />
-
-      {/* Process Input */}
-      <textarea
-        rows="6"
-        cols="35"
-        placeholder="A,0,3
+        <div className="control">
+          <label>Processes</label>
+          <textarea
+            placeholder={`A,0,3
 B,2,6
-C,4,4"
-        value={processText}
-        onChange={e => setProcessText(e.target.value)}
-      />
+C,4,4`}
+            value={processText}
+            onChange={e => setProcessText(e.target.value)}
+          />
+        </div>
+      </div>
 
-      <br /><br />
+      <button className="run-btn" onClick={runScheduler}>
+        ▶ Run Simulation
+      </button>
 
-      <button onClick={runScheduler}>Run</button>
+      {error && <div className="error">{error}</div>}
 
-      {/* Error */}
-      {error && <p style={{ color: "red" }}>{error}</p>}
-
-      {/* Gantt Chart */}
       {timeline && (
-        <div style={{ marginTop: "20px" }}>
+        <div className="gantt">
+          <h2>Gantt Chart</h2>
+
           {Object.entries(timeline).map(([process, cells]) => (
-            <div key={process} className="row">
-              <strong style={{ width: "30px", display: "inline-block" }}>
-                {process}
-              </strong>
-              {cells.map((c, i) => (
-                <div
-                  key={i}
-                  className={`cell ${
-                    c === "*" ? "run" : c === "." ? "wait" : "idle"
-                  }`}
-                />
-              ))}
+            <div key={process} className="gantt-row">
+              <div className="process-label">{process}</div>
+
+              <div className="cells">
+                {cells.map((c, i) => (
+                  <div
+                    key={i}
+                    className={`cell ${
+                      c === "*" ? "run" : c === "." ? "wait" : "idle"
+                    }`}
+                    title={`t=${i}`}
+                  />
+                ))}
+              </div>
             </div>
           ))}
         </div>
       )}
     </div>
-  );
+  </div>
+);
+
 }
 
 export default App;
