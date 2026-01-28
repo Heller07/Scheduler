@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
+
 import "./App.css";
 
 /* ---------- Helper: Parse scheduler timeline ---------- */
@@ -32,11 +33,21 @@ function App() {
   const [processText, setProcessText] = useState("");
   const [timeline, setTimeline] = useState(null);
   const [error, setError] = useState("");
+  const [currentTime, setCurrentTime] = useState(0);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const intervalRef = useRef(null);
 
   /* ---------- Run Scheduler ---------- */
   const runScheduler = async () => {
     setError("");
     setTimeline(null);
+    setCurrentTime(0);
+    setIsPlaying(false);
+
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
+    }
 
     if (!processText.trim()) {
       setError("Please enter at least one process.");
@@ -60,8 +71,6 @@ ${processes.join("\n")}
       });
 
       const data = await res.json();
-      console.log("Backend response:", data);
-
       if (!data.output) {
         setError("No output received from backend.");
         return;
@@ -70,19 +79,44 @@ ${processes.join("\n")}
       const parsed = parseTimeline(data.output);
       setTimeline(parsed);
     } catch (err) {
-      console.error(err);
       setError("Failed to connect to backend.");
     }
   };
 
-const lastActiveTime = timeline
-  ? Math.max(
-      ...Object.values(timeline).map(
-        (cells) => Math.max(cells.lastIndexOf("*"), 0)
-      )
-    ) + 1
-  : 0;
+  const lastActiveTime = timeline
+    ? Math.max(
+        ...Object.values(timeline).map((cells) =>
+          Math.max(cells.lastIndexOf("*"), 0),
+        ),
+      ) + 1
+    : 0;
 
+  const restartAnimation = () => {
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
+    }
+    setCurrentTime(0);
+    setIsPlaying(false);
+  };
+
+  useEffect(() => {
+    if (!timeline || !isPlaying) return;
+
+    intervalRef.current = setInterval(() => {
+      setCurrentTime((t) => {
+        if (t >= lastActiveTime) {
+          clearInterval(intervalRef.current);
+          intervalRef.current = null;
+          setIsPlaying(false);
+          return t;
+        }
+        return t + 1;
+      });
+    }, 300);
+
+    return () => clearInterval(intervalRef.current);
+  }, [timeline, isPlaying, lastActiveTime]);
 
   return (
     <div className="app">
@@ -119,13 +153,39 @@ C,4,4`}
           </div>
         </div>
 
-        <button className="run-btn" onClick={runScheduler}>
-          ▶ Run Simulation
-        </button>
+        <div style={{ display: "flex", gap: "10px", marginTop: "12px" }}>
+          <button className="run-btn" onClick={runScheduler}>
+            ⚙ Generate Timeline
+          </button>
+
+          <button
+            className="run-btn"
+            onClick={() => setIsPlaying(true)}
+            disabled={!timeline || isPlaying}
+          >
+            ▶ Play
+          </button>
+
+          <button
+            className="run-btn"
+            onClick={() => setIsPlaying(false)}
+            disabled={!isPlaying}
+          >
+            ⏸ Pause
+          </button>
+
+          <button
+            className="run-btn"
+            onClick={restartAnimation}
+            disabled={!timeline}
+          >
+            ↺ Restart
+          </button>
+        </div>
 
         {error && <div className="error">{error}</div>}
 
-        {timeline && (
+        {timeline && currentTime > 0 && (
           <div className="gantt">
             <div className="legend-row">
               <div className="process-label"></div>
@@ -146,19 +206,18 @@ C,4,4`}
               </div>
             </div>
 
-                  {/* TIME AXIS ROW */}
-              <div className="gantt-row">
-                <div className="process-label time-label">Time →</div>
+            {/* TIME AXIS ROW */}
+            <div className="gantt-row">
+              <div className="process-label time-label">Time →</div>
 
-                <div className="cells">
-                  {Array.from({ length: lastActiveTime }).map((_, i) => (
-                    <div key={i} className="time-cell">
-                      {i}
-                    </div>
-                  ))}
-                </div>
+              <div className="cells">
+                {Array.from({ length: currentTime }).map((_, i) => (
+                  <div key={i} className="time-cell">
+                    {i}
+                  </div>
+                ))}
               </div>
-            
+            </div>
 
             {/* PROCESS ROWS */}
             {Object.entries(timeline).map(([process, cells]) => (
@@ -166,7 +225,7 @@ C,4,4`}
                 <div className="process-label">{process}</div>
 
                 <div className="cells">
-                  {cells.slice(0, lastActiveTime).map((c, i) => (
+                  {cells.slice(0, currentTime).map((c, i) => (
                     <div
                       key={i}
                       className={`cell ${
